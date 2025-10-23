@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, defineEmits } from "vue";
+import { defineProps, ref, defineEmits, watch } from "vue";
 const { item, pcode } = defineProps({
   item: { type: Object, required: true },
   pcode: String,
@@ -15,6 +15,11 @@ const removeItem = (code) => {
 const applyTotalPrice = () => {
   emit("update-qty", pcode, { ...item, qty: localQty.value });
 };
+watch(
+  () => item.qty,
+  (newQty) => (localQty.value = newQty),
+  { immediate: true },
+);
 </script>
 
 <template>
