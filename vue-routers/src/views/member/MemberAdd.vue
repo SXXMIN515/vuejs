@@ -19,7 +19,7 @@
         <dt><label for="">이메일</label></dt>
         <dd><input type="email" v-model="member.email" /></dd>
         <dt><label for="">연락처</label></dt>
-        <dd><input type="number" v-model.number="member.phone" /></dd>
+        <dd><input type="text" v-model.number="member.phone" /></dd>
         <dt><label for="">주소</label></dt>
         <dd><input type="text" v-model="member.address" /></dd>
       </dl>
@@ -39,29 +39,31 @@ const member = reactive({
   id: 0,
   name: "",
   email: "",
-  points: 0,
-  note: "",
+  phone: "",
+  address: "",
 });
 const memberList = inject("memberList");
 
 // 함수.
 const onAdd = () => {
-  memberList.set(member.id, member);
+  axios
+    .post("http://localhost:3000/customer", {
+      param: {
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        phone: member.phone,
+        address: member.address,
+      },
+    })
+    .then((resp) => {
+      console.log(resp);
+    })
+    .catch((err) => console.log(err));
+
+  memberList.set(member.id, { ...member });
+
   // 목록이동.
   router.push({ name: "MemberList" });
 };
-
-axios
-  .post("http://localhost:3000/customer", {
-    id: member.id,
-    name: member.name,
-    email: member.email,
-    phone: member.phone,
-    address: member.address,
-  })
-  .then((resp) => {
-    console.log(resp);
-    member.value = resp.data[0];
-  })
-  .catch((err) => console.log(err));
 </script>
