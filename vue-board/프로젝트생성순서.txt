@@ -1,0 +1,21 @@
+프로젝트 폴더 생성 후
+
+cmd -> npm init
+
+app.js 생성
+
+
+vuejs
+프로젝트 생성
+
+prettier.json 수정
+
+index.js 페이지 경로 설정 -> 전체적인 그림
+
+App.vue 스타일 삭제, 템플릿 html삭제
+
+HomeView.vue 첫페이지 그리기
+
+components 폴더 밑에 PostFrom.vue, PostList.vue 그리기
+
+모듈 설치 axios 
