@@ -3,33 +3,13 @@
     <h3>수정화면</h3>
     <form v-on:submit.prevent="modifyPostHandler">
       <label for="title">제목</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        v-model="title"
-        placeholder="제목을 입력하세요"
-        required
-      />
+      <input type="text" id="title" name="title" v-model="title" required />
 
       <label for="content">내용</label>
-      <textarea
-        id="content"
-        name="content"
-        v-model="content"
-        placeholder="내용을 입력하세요"
-        required
-      ></textarea>
+      <textarea id="content" name="content" v-model="content" required></textarea>
 
       <label for="writer">작성자</label>
-      <input
-        type="text"
-        id="writer"
-        name="writer"
-        v-model="writer"
-        placeholder="작성자 이름"
-        required
-      />
+      <input type="text" id="writer" name="writer" v-model="writer" required />
 
       <button type="submit">수정</button>
     </form>
@@ -37,8 +17,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRoute, useRouter, RouterLink } from "vue-router";
+import { ref, onBeforeMount } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { usePostStore } from "@/stores/post";
 
 const route = useRoute(); // 라우트 정보 접근
@@ -46,25 +26,33 @@ const router = useRouter(); // 라우터 인스턴스 접근
 
 // store 사용
 const postStore = usePostStore(); // pinia 스토어 사용
-// State, Getter 사용.
-const post = computed(() => {
-  return postStore.getPostById(route.params.id);
-});
 
-// 게시글 데이터 상태 관리.
-const writeDate = computed(() => {
-  if (post.value.write_date) {
-    return new Date(post.value.write_date).toLocaleString();
+const title = ref("");
+const content = ref("");
+const writer = ref("");
+
+// 기존 데이터 채우기
+onBeforeMount(async () => {
+  await postStore.fetchPosts();
+  const post = postStore.getPostById(route.params.id);
+  if (post) {
+    title.value = post.title;
+    content.value = post.content;
+    writer.value = post.writer;
   }
-  return "";
 });
 
 // 수정 핸들러
 const modifyPostHandler = async () => {
-  const postId = route.params.id;
-  await postStore.deletePost(postId);
-  // 목록으로 이동
-  router.push({ name: "ModifyView" });
+  const updatedPost = {
+    title: title.value,
+    content: content.value,
+    writer: writer.value,
+  };
+  // 백엔드에 전달할 형식: [{title, content, writer}, id]
+  await postStore.modifyPost([updatedPost, parseInt(route.params.id)]);
+  // 상세조회 페이지로 이동
+  router.push({ name: "PostView", params: { id: route.params.id } });
 };
 </script>
 

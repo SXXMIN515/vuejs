@@ -8,7 +8,7 @@
     </p>
     <p>작성일시 {{ writeDate }}</p>
     <p><button v-on:click="deletePostHandler">삭제</button></p>
-    <p><button v-on:click="modifyPostHandler">수정</button></p>
+    <p><button v-on:click="goModifyPage">수정</button></p>
     <RouterLink to="/">목록으로</RouterLink>
   </div>
 </template>
@@ -48,10 +48,8 @@ const deletePostHandler = async () => {
 };
 
 // 수정 핸들러
-const modifyPostHandler = async () => {
-  const params = route.params;
-  await postStore.modifyPost(params);
-  // 목록으로 이동
-  router.push({ name: "ModifyView" });
+const goModifyPage = async () => {
+  // 수정페이지로 이동
+  router.push({ name: "ModifyView", params: { id: route.params.id } });
 };
 </script>
