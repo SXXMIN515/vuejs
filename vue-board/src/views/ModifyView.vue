@@ -8,9 +8,6 @@
       <label for="content">내용</label>
       <textarea id="content" name="content" v-model="content" required></textarea>
 
-      <label for="writer">작성자</label>
-      <input type="text" id="writer" name="writer" v-model="writer" required />
-
       <button type="submit">수정</button>
     </form>
   </div>
@@ -29,7 +26,6 @@ const postStore = usePostStore(); // pinia 스토어 사용
 
 const title = ref("");
 const content = ref("");
-const writer = ref("");
 
 // 기존 데이터 채우기
 onBeforeMount(async () => {
@@ -38,7 +34,6 @@ onBeforeMount(async () => {
   if (post) {
     title.value = post.title;
     content.value = post.content;
-    writer.value = post.writer;
   }
 });
 
@@ -47,7 +42,6 @@ const modifyPostHandler = async () => {
   const updatedPost = {
     title: title.value,
     content: content.value,
-    writer: writer.value,
   };
   // 백엔드에 전달할 형식: [{title, content, writer}, id]
   await postStore.modifyPost([updatedPost, parseInt(route.params.id)]);

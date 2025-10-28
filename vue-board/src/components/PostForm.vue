@@ -21,7 +21,7 @@
         required
       ></textarea>
 
-      <label for="writer">작성자</label>
+      <!-- <label for="writer">작성자</label>
       <input
         type="text"
         id="writer"
@@ -29,7 +29,7 @@
         v-model="writer"
         placeholder="작성자 이름"
         required
-      />
+      /> -->
 
       <button type="submit">작성</button>
     </form>
@@ -41,31 +41,31 @@ import { ref } from "vue";
 
 // pinia store에서 addPost 함수 주입
 import { usePostStore } from "@/stores/post";
+import { useAuthStore } from "@/stores/auth";
 const postStore = usePostStore(); // pinia 스토어 사용
+const authStore = useAuthStore();
 const { addPost } = postStore; // addPost 함수 추출
 
 // 폼 데이터 상태 관리
 const title = ref("");
 const content = ref("");
-const writer = ref("");
 
 // 폼 제출 핸들러
 const addPostHandler = async () => {
-  if (!title.value || !content.value || !writer.value) {
+  if (!title.value || !content.value) {
     alert("모든 필드를 작성해주세요");
     return;
   }
   const newPost = {
     title: title.value,
     content: content.value,
-    writer: writer.value,
+    writer: authStore.auth.name,
   };
 
   await addPost(newPost);
   // 폼 초기화
   title.value = "";
   content.value = "";
-  writer.value = "";
 };
 </script>
 

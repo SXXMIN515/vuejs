@@ -14,23 +14,23 @@ export const usePostStore = defineStore("post", () => {
 
   // action : 데이터변경.
   const addPost = async (newPost) => {
-    const result = await axios.post("http://localhost:3000/board", { param: newPost });
+    const result = await axios.post("http://192.168.0.13:3000/board", { param: newPost });
     // console.log("InsertId: " + result.data.insertId);
     posts.value.push({ ...newPost, id: result.data.insertId });
   };
 
   const deletePost = async (id) => {
-    await axios.delete(`http://localhost:3000/board/${id}`);
+    await axios.delete(`http://192.168.0.13:3000/board/${id}`);
     posts.value = posts.value.filter((post) => post.id !== id);
   };
 
   const fetchPosts = async () => {
-    const response = await axios.get("http://localhost:3000/boards");
+    const response = await axios.get("http://192.168.0.13:3000/boards");
     posts.value = response.data;
   };
 
   const modifyPost = async (param) => {
-    await axios.put("http://localhost:3000/board", { param });
+    await axios.put("http://192.168.0.13:3000/board", { param });
     // 수정 후 posts 배열도 갱신
     const [updatedData, id] = param;
     const index = posts.value.findIndex((post) => post.id === id);
@@ -39,5 +39,30 @@ export const usePostStore = defineStore("post", () => {
     }
   };
 
-  return { posts, getPostById, addPost, deletePost, fetchPosts, modifyPost };
+  const fetchReplies = async (id) => {
+    const response = await axios.get(`http://192.168.0.13:3000/reply/${id}`);
+    return response.data;
+  };
+
+  const addReply = async (newReply) => {
+    const result = await axios.post("http://192.168.0.13:3000/reply", { param: newReply });
+    // console.log("InsertId: " + result.data.insertId);
+    posts.value.push({ ...newReply, id: result.data.insertId });
+  };
+
+  const deleteReply = async (id) => {
+    await axios.delete(`http://192.168.0.13:3000/reply/${id}`);
+  };
+
+  return {
+    posts,
+    getPostById,
+    addPost,
+    deletePost,
+    fetchPosts,
+    modifyPost,
+    fetchReplies,
+    addReply,
+    deleteReply,
+  };
 });
